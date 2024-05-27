@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="window">#FFEADB</color>
+    <color name="md_theme_light_primary">#D69C6A</color>
+    <color name="md_theme_light_onPrimary">#FFFFFF</color>
+    <color name="toolbar_text_color">#FFFFFF</color>
+    <color name="home">#FFDCC1</color>
+    <color name="card">#FFE3CE</color>
+    <!-- Adjusted container colors -->
+    <color name="md_theme_light_primaryContainer">#FFDCC1</color>
+    <color name="md_theme_light_onPrimaryContainer">#A67547</color>
+    <color name="md_theme_light_error">#BA1A1A</color>
+    <color name="md_theme_light_onError">#FFFFFF</color>
+    <color name="md_theme_light_errorContainer">#FFDAD6</color>
+    <color name="md_theme_light_onErrorContainer">#410002</color>
+    <color name="md_theme_light_surface">#FFFBFE</color>
+    <color name="md_theme_light_onBackground">#1C1B1F</color>
+    <color name="md_theme_light_onSurface">#1C1B1F</color>
+    <color name="md_theme_light_surfaceVariant">#E7E0EC</color>
+    <color name="colorPrimary">#D69C6A</color>
+    <color name="colorPrimaryDark">#A67547</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+</resources>
