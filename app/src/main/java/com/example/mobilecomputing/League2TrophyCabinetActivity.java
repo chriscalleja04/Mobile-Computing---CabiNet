@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -29,15 +30,26 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_league2_trophy_cabinet);
-        MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
-        setSupportActionBar(topAppBar); // Set your MaterialToolbar as the support action bar
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        setSupportActionBar(topAppBar);
 
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed(); // Emulate back button behavior
+                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(League2TrophyCabinetActivity.this, MySeasonsActivity.class);
+                        startActivity(i);
+                    }
+                };
+
+                getOnBackPressedDispatcher().addCallback(League2TrophyCabinetActivity.this, callback);
+
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.league2_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,7 +67,6 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
         boolean isFaVisible = dbHelper.isFaTrophyVisible(seasonId);
         boolean isLeagueVisible = dbHelper.isLeagueTrophyVisible(seasonId);
 
-        // Initialize views
 
         playoffImage = findViewById(R.id.league2_image);
         faImage = findViewById(R.id.fa_Image);
@@ -100,12 +111,6 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
             leagueImage.setVisibility(b ? View.VISIBLE : View.GONE);
 
         });
-
-
-        // Add listeners to save checkbox states in the database
-
-
-
 
 
         String abbrev = intent.getStringExtra("ABBR");

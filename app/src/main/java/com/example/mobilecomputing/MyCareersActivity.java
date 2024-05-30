@@ -36,10 +36,22 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(MyCareersActivity.this, MainActivity.class);
+                        startActivity(i);
+                    }
+                };
 
-                onBackPressed(); // Emulate back button behavior
+                // Add the callback to the OnBackPressedDispatcher
+                getOnBackPressedDispatcher().addCallback(MyCareersActivity.this, callback);
+
+                // Trigger the back press event to use the callback
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.my_careers_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

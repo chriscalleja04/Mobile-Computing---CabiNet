@@ -38,10 +38,20 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(UpdateCareersActivity.this, MyCareersActivity.class);
+                        startActivity(i);
+                    }
+                };
 
-                onBackPressed(); // Emulate back button behavior
+                getOnBackPressedDispatcher().addCallback(UpdateCareersActivity.this, callback);
+
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainLayout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

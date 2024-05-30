@@ -11,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -18,6 +19,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.material.appbar.MaterialToolbar;
+
 
 public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
 
@@ -40,10 +42,20 @@ public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(ChampionshipTrophyCabinetActivity.this, MySeasonsActivity.class);
+                        startActivity(i);
+                    }
+                };
 
-                onBackPressed(); // Emulate back button behavior
+                getOnBackPressedDispatcher().addCallback(ChampionshipTrophyCabinetActivity.this, callback);
+
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
 
 
 
@@ -129,7 +141,6 @@ public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
         });
 
 
-        // Add listeners to save checkbox states in the database
 
 
 

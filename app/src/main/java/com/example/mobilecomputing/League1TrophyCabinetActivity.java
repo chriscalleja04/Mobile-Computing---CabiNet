@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -35,9 +36,20 @@ public class League1TrophyCabinetActivity extends AppCompatActivity {
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed(); // Emulate back button behavior
+                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(League1TrophyCabinetActivity.this, MySeasonsActivity.class);
+                        startActivity(i);
+                    }
+                };
+
+                getOnBackPressedDispatcher().addCallback(League1TrophyCabinetActivity.this, callback);
+
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.league1_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

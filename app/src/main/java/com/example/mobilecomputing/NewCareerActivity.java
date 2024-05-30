@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -45,10 +46,20 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(NewCareerActivity.this, MyCareersActivity.class);
+                        startActivity(i);
+                    }
+                };
 
-                onBackPressed(); // Emulate back button behavior
+                getOnBackPressedDispatcher().addCallback(NewCareerActivity.this, callback);
+
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
 
 
 

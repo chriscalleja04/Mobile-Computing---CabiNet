@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -44,10 +45,22 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        Intent i = new Intent(NewSeasonActivity.this, MySeasonsActivity.class);
+                        startActivity(i);
+                    }
+                };
 
-                onBackPressed(); // Emulate back button behavior
+                // Add the callback to the OnBackPressedDispatcher
+                getOnBackPressedDispatcher().addCallback(NewSeasonActivity.this, callback);
+
+                // Trigger the back press event to use the callback
+                getOnBackPressedDispatcher().onBackPressed();
             }
         });
+
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.league2_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -87,26 +100,27 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
 
           // Get the start year and next year
           String[] years = season.split("/");
-          int startYear = Integer.parseInt(years[0]) % 100; // Get last two digits
-          int nextYear = Integer.parseInt(years[1]) % 100; // Get last two digits
 
-          // Calculate the difference between start and next year
+          // Get last two digits
+          int startYear = Integer.parseInt(years[0]) % 100;
+          int nextYear = Integer.parseInt(years[1]) % 100;
+
+          // Calculate the difference between opening and closing seasons
           int yearDifference = nextYear - startYear;
 
           // Check if the difference is exactly one year
           if (yearDifference != 1) {
-              // Difference is not exactly one year, show error message
               editTextDate.setError("The latter half of the season should begin precisely one year after the commencement of the opening half (2023/24, 2023/2024 or 23/24)");
-              return; // Prevent further execution
+              return;
           }
 
-          // Standardize the season format to YYYY/YY
+          // Save format to YYYY/YY
           season = standardizeSeasonFormat(season);
 
           // Check if the season already exists in the database
           if (myDB.isSeasonExists(career_id, season)) {
               editTextDate.setError("This season already exists");
-              return; // Prevent further execution
+              return;
           }
 
 
@@ -132,13 +146,13 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
 
         // Convert start year and next year to 4-digit format if necessary
         if (startYear < 100) {
-            startYear += 2000; // Convert to 4-digit format (e.g., 23 becomes 2023)
+            startYear += 2000; // Convert to 4-digit format
         }
         if (nextYear < 100) {
-            nextYear += 2000; // Convert to 4-digit format (e.g., 24 becomes 2024)
+            nextYear += 2000;
         }
 
-        return startYear + "/" + nextYear % 100; // Return season in YYYY/YY format
+        return startYear + "/" + nextYear % 100;
     }
     public void trophyCabinet(View view){
         Intent i = new Intent(this, TrophyCabinetActivity.class);

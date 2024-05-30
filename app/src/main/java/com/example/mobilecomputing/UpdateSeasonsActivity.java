@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -42,10 +43,20 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
             topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                        @Override
+                        public void handleOnBackPressed() {
+                            Intent i = new Intent(UpdateSeasonsActivity.this, MySeasonsActivity.class);
+                            startActivity(i);
+                        }
+                    };
 
-                    onBackPressed(); // Emulate back button behavior
+                    getOnBackPressedDispatcher().addCallback(UpdateSeasonsActivity.this, callback);
+
+                    getOnBackPressedDispatcher().onBackPressed();
                 }
             });
+
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.league2_layout), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
                 v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
