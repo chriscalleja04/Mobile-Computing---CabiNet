@@ -39,6 +39,9 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_my_seasons);
         recyclerView = findViewById(R.id.sRecyclerView);
+
+        // Initialising top app bar and setting click listener for back button
+
         MaterialToolbar topAppBar = findViewById(R.id.topAppBarTest); // Find your MaterialToolbar
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

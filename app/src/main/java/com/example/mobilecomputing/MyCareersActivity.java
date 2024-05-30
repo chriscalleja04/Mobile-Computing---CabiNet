@@ -32,11 +32,12 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_my_careers);
         recyclerView = findViewById(R.id.recyclerView_careers);
-        MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
+        // Initialising top app bar and setting click listener for back button
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(MyCareersActivity.this, MainActivity.class);
@@ -44,10 +45,8 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
                     }
                 };
 
-                // Add the callback to the OnBackPressedDispatcher
                 getOnBackPressedDispatcher().addCallback(MyCareersActivity.this, callback);
 
-                // Trigger the back press event to use the callback
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
@@ -59,19 +58,23 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
 
         });
 
+        // Initialising database helper and array lists
         myDB = new MyDatabaseHelper(MyCareersActivity.this);
         id = new ArrayList<>();
         teamName = new ArrayList<>();
         teamAbbr = new ArrayList<>();
 
-
+        // Retrieving and storing data from the database
         storeDataInArrays();
 
+        //RecyclerView setup with custom adapter
         customAdapter = new CustomAdapter(MyCareersActivity.this, this, id, teamName, teamAbbr, this);
         recyclerView.setAdapter(customAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(MyCareersActivity.this));
 
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+        // Navigate back to the main activity on back (system back not appbar button)
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Intent i = new Intent(MyCareersActivity.this, MainActivity.class);
@@ -82,6 +85,8 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
         this.getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
+    // Refresh the activity when a result is received
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,6 +94,8 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
             recreate();
         }
     }
+
+    // Store data from the database into array lists
 
     void storeDataInArrays(){
         Cursor cursor = myDB.readAllData();
@@ -104,6 +111,8 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
         }
     }
 
+    // Handle item click in the RecyclerView - passing intent to myseasons activity
+
     @Override
     public void onItemClick(int position) {
         String careerId = id.get(position);
@@ -116,10 +125,16 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
         startActivity(i);
 
     }
+
+    // Navigate to the main activity
+
     public void goHome(View v){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
+
+    // Start NewCareerActivity when the plus floating action button is clicked
+
     public void newCareer(View v) {
         Intent i = new Intent(this, NewCareerActivity.class);
         startActivity(i);

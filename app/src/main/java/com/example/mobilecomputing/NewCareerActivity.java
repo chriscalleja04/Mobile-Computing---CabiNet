@@ -1,11 +1,7 @@
 package com.example.mobilecomputing;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,8 +20,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 
 public class NewCareerActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    MyDatabaseHelper myDb;
-    SQLiteDatabase sqLiteDatabase;
+
     Spinner spinner;
 
     String[] leagues = {"Premier League", "Championship", "League One", "League Two"};
@@ -42,7 +37,9 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_new_career);
-        MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
+
+        // Initialising top app bar and setting click listener for back button
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +72,7 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
         spinner = findViewById(R.id.dropDown_season2);
         spinner.setOnItemSelectedListener(this);
 
-
+        // Set up spinner with league options
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, leagues);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
@@ -91,10 +88,10 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
                 String season = editTextDate.getText().toString().trim();
                 String name = teamName.getText().toString().trim();
                 String abbr = teamAbbr.getText().toString().trim().toUpperCase();
-                // Check if the input is null or empty
+                // Validate the input fields
                 if (name.isEmpty()) {
                     teamName.setError("This is a required field");
-                    return; // Prevent further execution
+                    return;
                 }
                 if(name.length()>17){
                     teamName.setError("Cannot exceed 17 characters");
@@ -102,7 +99,7 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
                 }
                 if (abbr.isEmpty()) {
                     teamAbbr.setError("This is a required field");
-                    return; // Prevent further execution
+                    return;
                 }
                 if(abbr.length()<3) {
                     teamAbbr.setError("Cannot be less than 3 characters");
@@ -117,23 +114,20 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
                     return; // Prevent further execution
                 }
 
-                // Check if the input has the correct format of YYYY/YY
+                // Validate the season format
                 if (!season.matches("\\d{4}/\\d{2}") && !season.matches("\\d{4}/\\d{4}") && !season.matches("\\d{2}/\\d{2}") ) {
                     editTextDate.setError("Please enter the season in the format YYYY/YY, YYYY/YYYY or YY/YY. Kindly include the '/'");
                     return; // Prevent further execution
                 }
 
-                // Get the start year and next year
+                // Validate the year difference
                 String[] years = season.split("/");
                 int startYear = Integer.parseInt(years[0]) % 100; // Get last two digits
-                int nextYear = Integer.parseInt(years[1]) % 100; // Get last two digits
+                int nextYear = Integer.parseInt(years[1]) % 100;
 
-                // Calculate the difference between start and next year
                 int yearDifference = nextYear - startYear;
 
-                // Check if the difference is exactly one year
                 if (yearDifference != 1) {
-                    // Difference is not exactly one year, show error message
                     editTextDate.setError("The latter half of the season should begin precisely one year after the commencement of the opening half (2023/24, 2023/2024 or 23/24)");
                     return; // Prevent further execution
                 }
@@ -158,18 +152,19 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
 
         });
     }
+    // Standardize the season format to YYYY/YY
+
     private String standardizeSeasonFormat(String season) {
-        // Split season once to get start and next years
         String[] years = season.split("/");
         int startYear = Integer.parseInt(years[0]);
         int nextYear = Integer.parseInt(years[1]);
 
         // Convert start year and next year to 4-digit format if necessary
         if (startYear < 100) {
-            startYear += 2000; // Convert to 4-digit format (e.g., 23 becomes 2023)
+            startYear += 2000;
         }
         if (nextYear < 100) {
-            nextYear += 2000; // Convert to 4-digit format (e.g., 24 becomes 2024)
+            nextYear += 2000;
         }
 
         return startYear + "/" + nextYear % 100; // Return season in YYYY/YY format
@@ -198,10 +193,14 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
 
         startActivity(i);
     }
+
+    // Navigate to the main activity
     public void goHome(View v){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
+
+    // Another method to navigate to the main activity
     public void home(View v) {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
