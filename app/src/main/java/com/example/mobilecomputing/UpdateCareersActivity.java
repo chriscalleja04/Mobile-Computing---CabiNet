@@ -21,7 +21,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 
 public class UpdateCareersActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener {
     EditText team_name_input, team_abbr_input;
-    ArrayAdapter arrayAdapter;
     Button update_button;
 
 
@@ -32,12 +31,14 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_update_careers);
+
+        // Initialising top app bar and setting click listener for back button
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
         setSupportActionBar(topAppBar); // Set your MaterialToolbar as the support action bar
-
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Back button to navigate back to MyCareersActivity
                 OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
                     @Override
                     public void handleOnBackPressed() {
@@ -58,22 +59,25 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
             return insets;
         });
 
+        // Initialize views and button
         team_name_input = findViewById(R.id.teamName2);
         team_abbr_input = findViewById(R.id.teamAbbriv2);
         update_button = findViewById(R.id.update_buttom);
 
-
+        // Retrieve data passed via Intent and populate input fields
         getAndSetIntentData();
 
+        // Set click listener for the update button
         update_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Retrieve updated values from input fields
                 String updatedName = team_name_input.getText().toString().trim();
                 String updatedAbbr = team_abbr_input.getText().toString().trim().toUpperCase();
+                // Validate input fields
                 if (updatedName.isEmpty()) {
                     team_name_input.setError("This is a required field");
-                    return; // Prevent further execution
+                    return;
                 }
                 if(updatedName.length()>17){
                     team_name_input.setError("Cannot exceed 17 characters");
@@ -81,7 +85,7 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
                 }
                 if (updatedAbbr.isEmpty()) {
                     team_abbr_input.setError("This is a required field");
-                    return; // Prevent further execution
+                    return;
                 }
                 if(updatedAbbr.length()<3) {
                     team_abbr_input.setError("Cannot be less than 3 characters");
@@ -92,9 +96,12 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
                     return;
                 }
 
-                // Call the updateData() method with updated values
+                // Update data in the database
                 MyDatabaseHelper myDB = new MyDatabaseHelper(UpdateCareersActivity.this);
                 myDB.updateData(id, updatedName, updatedAbbr);
+
+
+                // Navigate back to MyCareersActivity
                 Intent i = new Intent(UpdateCareersActivity.this, MyCareersActivity.class);
                 startActivity(i);
             }
@@ -103,6 +110,7 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
 
     }
 
+    // Retrieve and set data passed via Intent
     void getAndSetIntentData() {
         if (getIntent().hasExtra("id") && getIntent().hasExtra("teamName") && getIntent().hasExtra("teamAbbr")) {
             //Getting Data From Intent
@@ -111,7 +119,7 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
             abbr = getIntent().getStringExtra("teamAbbr");
 
 
-            //Setting intent data
+            // Set data to input fields
             team_name_input.setText(name);
             team_abbr_input.setText(abbr);
 
@@ -123,15 +131,15 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        // Update the league variable with the selected league
 
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        // Handle the case when nothing is selected in the spinner
     }
 
+
+    // Navigate back to MyCareersActivity
     public void myCareers(View v) {
 
 
@@ -141,6 +149,7 @@ public class UpdateCareersActivity extends AppCompatActivity  implements Adapter
 
     }
 
+    // Navigate back to Main Activity
     public void goHome(View view) {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

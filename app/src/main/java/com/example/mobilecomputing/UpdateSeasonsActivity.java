@@ -37,13 +37,15 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
             super.onCreate(savedInstanceState);
             EdgeToEdge.enable(this);
             setContentView(R.layout.activity_update_seasons);
-            MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
-            setSupportActionBar(topAppBar); // Set your MaterialToolbar as the support action bar
 
+            // Initialising top app bar and setting click listener for back button
+            MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+            setSupportActionBar(topAppBar);
             topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                    // Handle back button click to navigate back to MySeasonsActivity
+                    OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                         @Override
                         public void handleOnBackPressed() {
                             Intent i = new Intent(UpdateSeasonsActivity.this, MySeasonsActivity.class);
@@ -63,65 +65,65 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
                 return insets;
             });
 
-
+            // Initialize views and button
             season_input = findViewById(R.id.editTextDate_season2);
             update_button = findViewById(R.id.update_season);
 
             spinner = findViewById(R.id.dropDown_season);
             spinner.setOnItemSelectedListener(this);
 
-
+            // Populate spinner with league options
             arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, leagues);
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(arrayAdapter);
 
+            // Retrieve and set data passed via Intent
             getAndSetIntentData();
 
+            // Set click listener for the update button
             update_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     MyDatabaseHelper myDB = new MyDatabaseHelper(UpdateSeasonsActivity.this);
                     String updatedSeason = season_input.getText().toString();
+                    // Validate the input fields
                     if (updatedSeason.isEmpty()) {
                         season_input.setError("This is a required field");
-                        return; // Prevent further execution
+                        return;
                     }
 
-                    // Check if the input has the correct format of YYYY/YY
+                    // Validate the season format
                     if (!updatedSeason.matches("\\d{4}/\\d{2}") && !updatedSeason.matches("\\d{4}/\\d{4}") && !updatedSeason.matches("\\d{2}/\\d{2}")) {
                         season_input.setError("Please enter the season in the format YYYY/YY, YYYY/YYYY or YY/YY. Kindly include the '/'");
                         return; // Prevent further execution
                     }
 
-                    // Get the start year and next year
-                    String[] years = updatedSeason.split("/");
-                    int startYear = Integer.parseInt(years[0]) % 100; // Get last two digits
-                    int nextYear = Integer.parseInt(years[1]) % 100; // Get last two digits
 
-                    // Calculate the difference between start and next year
+                    String[] years = updatedSeason.split("/");
+
+                    // Get last two digits
+                    int startYear = Integer.parseInt(years[0]) % 100;
+                    int nextYear = Integer.parseInt(years[1]) % 100;
+
                     int yearDifference = nextYear - startYear;
 
-                    // Check if the difference is exactly one year
                     if (yearDifference != 1) {
-                        // Difference is not exactly one year, show error message
                         season_input.setError("The latter half of the season should begin precisely one year after the commencement of the opening half (2023/24, 2023/2024 or 23/24)");
-                        return; // Prevent further execution
+                        return;
                     }
 
                     // Standardize the season format to YYYY/YY
                     updatedSeason = standardizeSeasonFormat(updatedSeason);
 
-                    // Get the existing seasons associated with the ID from the database
+                    // Check if the season already exists in the database
                     if (!updatedSeason.equals(season)) {
                         // If the updated season is different, check if it already exists in the database
                         if (myDB.isSeasonExistsUpdate(updatedSeason)) {
                             season_input.setError("This season already exists");
-                            return; // Prevent further execution
+                            return;
                         }
                     }
-                    // Check if the updated season already exists in the database
-
-                        // If the updated season is different, update it in the database
+                        //update season data and clear trophy visibilities
                         myDB.updateDataSeasons(id, updatedSeason, league);
                         myDB.clearPlayoffTrophyVisibility(Long.parseLong(id));
                         myDB.clearTrophyVisibility(Long.parseLong(id));
@@ -131,7 +133,7 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
                         Intent resultIntent = new Intent();
                         resultIntent.putExtra("updatedSeason", updatedSeason);
                         setResult(Activity.RESULT_OK, resultIntent);
-                        finish(); // Close this activity
+                        finish();
 
                 }
             });
@@ -157,15 +159,15 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
 
         return startYear + "/" + nextYear % 100; // Return season in YYYY/YY format
     }
-        void getAndSetIntentData(){
+    // Method to retrieve and set data passed via Intent
+    void getAndSetIntentData(){
             if(getIntent().hasExtra("id") && getIntent().hasExtra("season") && getIntent().hasExtra("league")){
                 //Getting Data From Intent
                 id = getIntent().getStringExtra("id");
                 season = getIntent().getStringExtra("season");
                 league = getIntent().getStringExtra("league");
 
-                //Setting intent data
-
+                // Set data to input fields and spinner
                 season_input.setText(season);
                 int spinnerPosition = arrayAdapter.getPosition(league);
                 spinner.setSelection(spinnerPosition);
@@ -174,6 +176,7 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
             }
         }
 
+        //handle item selection in the spinner
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
             league = leagues[i];
@@ -185,12 +188,14 @@ public class UpdateSeasonsActivity extends AppCompatActivity implements AdapterV
 
         }
 
+    //Navigate back to MySeasonsActivity
     public void mySeasons(View view){
             Intent i = new Intent(this, MySeasonsActivity.class);
             startActivity(i);
             finish();
     }
 
+    //Navigate back to MainActivity
     public void goHome(View view) {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

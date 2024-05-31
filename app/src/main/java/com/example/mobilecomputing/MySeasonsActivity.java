@@ -41,12 +41,12 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
         recyclerView = findViewById(R.id.sRecyclerView);
 
         // Initialising top app bar and setting click listener for back button
-
         MaterialToolbar topAppBar = findViewById(R.id.topAppBarTest); // Find your MaterialToolbar
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                // Handle back button click to navigate back to MyCareersActivity
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(MySeasonsActivity.this, MyCareersActivity.class);
@@ -54,10 +54,8 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
                     }
                 };
 
-                // Add the callback to the OnBackPressedDispatcher
                 getOnBackPressedDispatcher().addCallback(MySeasonsActivity.this, callback);
 
-                // Trigger the back press event to use the callback
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
@@ -88,17 +86,9 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(MySeasonsActivity.this));
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Reload data from database onResume
-        id.clear();
-        season.clear();
-        leagues.clear();
-        storeDataInArrays(getIntent().getStringExtra("CAREER_ID"));
-        customSeasonAdapter.notifyDataSetChanged();
-    }
 
+
+    // Populate data arrays from the database
     void storeDataInArrays(String career_id) {
         Cursor cursor = myDB.readAllDataSeasons(career_id);
         if (cursor.getCount() == 0) {
@@ -112,6 +102,7 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
         }
     }
 
+    // Navigate to NewSeasonActivity
     public void newSeason(View v) {
         String career_id = getIntent().getStringExtra("CAREER_ID");
         Intent i = new Intent(this, NewSeasonActivity.class);
@@ -119,6 +110,7 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
         startActivity(i);
     }
 
+    //Navigate to relevant cabinet activities
     public void onItemClick(int position) {
         String seasonId = id.get(position);
         String season = this.season.get(position);
@@ -176,7 +168,17 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
             }
         }
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload data from database when resuming
+        id.clear();
+        season.clear();
+        leagues.clear();
+        storeDataInArrays(getIntent().getStringExtra("CAREER_ID"));
+        customSeasonAdapter.notifyDataSetChanged();
+    }
+    //Retrieve updated season data and update UI
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -194,6 +196,7 @@ public class MySeasonsActivity extends AppCompatActivity implements RecyclerView
         }
     }
 
+    //navigate back to the home activity
     public void goHome(View v){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

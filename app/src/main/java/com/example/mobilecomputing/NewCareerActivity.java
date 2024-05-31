@@ -43,7 +43,8 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                    // Handle back button click to navigate back to MyCareersActivity
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(NewCareerActivity.this, MyCareersActivity.class);
@@ -117,7 +118,7 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
                 // Validate the season format
                 if (!season.matches("\\d{4}/\\d{2}") && !season.matches("\\d{4}/\\d{4}") && !season.matches("\\d{2}/\\d{2}") ) {
                     editTextDate.setError("Please enter the season in the format YYYY/YY, YYYY/YYYY or YY/YY. Kindly include the '/'");
-                    return; // Prevent further execution
+                    return;
                 }
 
                 // Validate the year difference
@@ -153,7 +154,6 @@ public class NewCareerActivity extends AppCompatActivity implements AdapterView.
         });
     }
     // Standardize the season format to YYYY/YY
-
     private String standardizeSeasonFormat(String season) {
         String[] years = season.split("/");
         int startYear = Integer.parseInt(years[0]);

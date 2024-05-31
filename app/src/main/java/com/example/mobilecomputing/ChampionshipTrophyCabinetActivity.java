@@ -36,13 +36,15 @@ public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_championship_trophy_cabinet);
+
+        // Initialising top app bar and setting click listener for back button
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
         setSupportActionBar(topAppBar); // Set your MaterialToolbar as the support action bar
-
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                    // Handle back button click to navigate back to MySeasonsActivity
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(ChampionshipTrophyCabinetActivity.this, MySeasonsActivity.class);
@@ -66,9 +68,10 @@ public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
             return insets;
         });
 
-
+        // Initialize database helper
         dbHelper = new MyDatabaseHelper(this);
 
+        // Retrieve season ID from the intent
         Intent intent = getIntent();
         String seasonIdString = intent.getStringExtra("ID");
         seasonId = Long.parseLong(seasonIdString);
@@ -145,7 +148,7 @@ public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
 
 
 
-
+        // Set team abbreviation, season, and league text views
         String abbrev = intent.getStringExtra("ABBR");
         ((TextView) findViewById(R.id.abbr)).setText("(" + abbrev + ")");
 
@@ -158,7 +161,7 @@ public class ChampionshipTrophyCabinetActivity extends AppCompatActivity {
 
 
     }
-
+    // Navigate back to the main activity when home button is clicked
     public void goHome(View v){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

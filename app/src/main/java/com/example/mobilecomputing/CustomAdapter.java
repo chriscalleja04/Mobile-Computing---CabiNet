@@ -44,19 +44,22 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
+        // Inflate layout for each row
         View view = inflater.inflate(R.layout.my_row, parent, false);
         return new MyViewHolder(view, recyclerViewInterface);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
+        // Bind data to views
         holder.team_name_txt.setText(String.valueOf(teamName.get(position)));
         holder.team_abbr_txt.setText(String.valueOf(teamAbbr.get(position)));
 
+        // Set click listeners for edit and delete buttons
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Start UpdateCareersActivity with data
                 Intent i = new Intent(context, UpdateCareersActivity.class);
                 i.putExtra("id", String.valueOf(id.get(position)));
                 i.putExtra("teamName", String.valueOf(teamName.get(position)));
@@ -75,22 +78,26 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
 
     @Override
     public int getItemCount() {
+
         return id.size();
     }
 
+    // Confirmation dialog for delete
     void confirmDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Delete " + teamName.get(position) + " career ?");
         builder.setMessage("Are you sure you want to delete your " + teamName.get(position) + " career ?");
         builder.setPositiveButton("Yes", (dialogInterface, i) -> {
+            // Delete career from database
             MyDatabaseHelper myDB = new MyDatabaseHelper(context);
+            // Refresh MyCareersActivity
             myDB.deleteOneRow(String.valueOf(id.get(position)));
             Intent intent = new Intent(context, MyCareersActivity.class);
             activity.startActivityForResult(intent, 1);
 
         });
         builder.setNegativeButton("No", (dialogInterface, i) -> {
-
+            // Do nothing if user cancels delete
         });
         builder.create().show();
 
@@ -102,12 +109,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         FloatingActionButton edit, delete;
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
-
+            // Initialize views
             team_name_txt = itemView.findViewById(R.id.team_name_txt);
             team_abbr_txt = itemView.findViewById(R.id.team_abbr_txt);
             edit = itemView.findViewById(R.id.edit2);
             delete = itemView.findViewById(R.id.delete);
 
+            // Set click listener for item view
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

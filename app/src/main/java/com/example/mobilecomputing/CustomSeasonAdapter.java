@@ -44,6 +44,8 @@ public class CustomSeasonAdapter extends RecyclerView.Adapter<CustomSeasonAdapte
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
+
+        // Inflate layout for each row
         View view = inflater.inflate(R.layout.season_my_row, parent, false);
         return new MyViewHolder(view, recyclerViewInterface);
     }
@@ -52,12 +54,15 @@ public class CustomSeasonAdapter extends RecyclerView.Adapter<CustomSeasonAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CustomSeasonAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
-
+        // Bind data to views
         holder.new_season.setText(String.valueOf(season.get(position)));
         holder.new_league.setText(String.valueOf(league.get(position)));
+
+        // Set click listeners for edit and delete buttons
         holder.edit2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Start UpdateSeasonsActivity with data
                 Intent i = new Intent(context, UpdateSeasonsActivity.class);
                 i.putExtra("id", String.valueOf(id.get(position)));
                 i.putExtra("season", String.valueOf(season.get(position)));
@@ -82,6 +87,7 @@ public class CustomSeasonAdapter extends RecyclerView.Adapter<CustomSeasonAdapte
         return id.size();
         }
 
+    // Confirmation dialog for delete
     void confirmDialog(int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Delete " + season.get(position) + " season ?");
@@ -108,12 +114,13 @@ public class CustomSeasonAdapter extends RecyclerView.Adapter<CustomSeasonAdapte
         FloatingActionButton edit2, delete2;
         public MyViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
             super(itemView);
-
+            // Initialize views
             new_season = itemView.findViewById(R.id.new_season);
             new_league = itemView.findViewById(R.id.new_league);
             edit2 = itemView.findViewById(R.id.edit2);
             delete2 = itemView.findViewById(R.id.delete2);
 
+            // Set click listener for item view
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

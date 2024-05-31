@@ -29,13 +29,15 @@ public class TrophyCabinetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_trophy_cabinet);
-        MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
-        setSupportActionBar(topAppBar); // Set your MaterialToolbar as the support action bar
 
+        // Initialising top app bar and setting click listener for back button
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        setSupportActionBar(topAppBar);
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                    // Handle back button click to navigate back to MySeasonsActivity
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(TrophyCabinetActivity.this, MySeasonsActivity.class);
@@ -55,8 +57,10 @@ public class TrophyCabinetActivity extends AppCompatActivity {
         return insets;
         });
 
+        // Initialize database helper
         dbHelper = new MyDatabaseHelper(this);
 
+        // Retrieve season ID from the intent
         Intent intent = getIntent();
         String seasonIdString = intent.getStringExtra("ID");
         seasonId = Long.parseLong(seasonIdString);
@@ -72,7 +76,6 @@ public class TrophyCabinetActivity extends AppCompatActivity {
         leagueImage = findViewById(R.id.league_Image);
         trophyImage = findViewById(R.id.champ_Image);
         trophyImage2 = findViewById(R.id.prem_Image);
-
 
         fa_check = findViewById(R.id.fa_box);
         league_check = findViewById(R.id.league_box);
@@ -92,7 +95,7 @@ public class TrophyCabinetActivity extends AppCompatActivity {
         trophyImage.setVisibility(isChampVisible ? View.VISIBLE : View.GONE);
         trophyImage2.setVisibility(isPremVisible ? View.VISIBLE : View.GONE);
 
-
+        //Listeners to save checkbox states in the database
         fa_check.setOnCheckedChangeListener((compoundButton, b) -> {
             dbHelper.updateFaTrophyVisibility(seasonId, b ? 1 : 0);
             faImage.setVisibility(b ? View.VISIBLE : View.GONE);
@@ -106,7 +109,6 @@ public class TrophyCabinetActivity extends AppCompatActivity {
         });
 
 
-        // Add listeners to save checkbox states in the database
         check.setOnCheckedChangeListener((compoundButton, b) -> {
             dbHelper.updateChampTrophyVisibility(seasonId, b ? 1 : 0);
             trophyImage.setVisibility(b ? View.VISIBLE : View.GONE);
@@ -119,7 +121,7 @@ public class TrophyCabinetActivity extends AppCompatActivity {
 
 
 
-
+        // Set team abbreviation, season, and league text views
         String abbrev = intent.getStringExtra("ABBR");
         ((TextView) findViewById(R.id.abbr)).setText("(" + abbrev + ")");
 
@@ -133,6 +135,7 @@ public class TrophyCabinetActivity extends AppCompatActivity {
 
     }
     public void goHome(View v){
+        // Navigate back to the main activity when home button is clicked
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }

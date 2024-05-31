@@ -39,13 +39,16 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_new_season);
-        MaterialToolbar topAppBar = findViewById(R.id.topAppBar); // Find your MaterialToolbar
-        setSupportActionBar(topAppBar); // Set your MaterialToolbar as the support action bar
 
+        // Initialising top app bar and setting click listener for back button
+        MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
+        setSupportActionBar(topAppBar);
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+                    // Handle back button click to navigate back to MySeasonsActivity
+
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(NewSeasonActivity.this, MySeasonsActivity.class);
@@ -53,10 +56,8 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
                     }
                 };
 
-                // Add the callback to the OnBackPressedDispatcher
                 getOnBackPressedDispatcher().addCallback(NewSeasonActivity.this, callback);
 
-                // Trigger the back press event to use the callback
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
@@ -85,36 +86,33 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
       public void onClick(View view) {
           MyDatabaseHelper myDB = new MyDatabaseHelper(NewSeasonActivity.this);
           int career_id = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("CAREER_ID")));
-
           String season = editTextDate.getText().toString().trim();
+
+          // Validate the input fields
           if (season.isEmpty()) {
               editTextDate.setError("This is a required field");
-              return; // Prevent further execution
+              return;
           }
 
-          // Check if the input has the correct format of YYYY/YY
+          // Validate the season format
           if (!season.matches("\\d{4}/\\d{2}") && !season.matches("\\d{4}/\\d{4}") && !season.matches("\\d{2}/\\d{2}")) {
               editTextDate.setError("Please enter the season in the format YYYY/YY, YYYY/YYYY or YY/YY. Kindly include the '/'");
               return; // Prevent further execution
           }
 
-          // Get the start year and next year
           String[] years = season.split("/");
 
           // Get last two digits
           int startYear = Integer.parseInt(years[0]) % 100;
           int nextYear = Integer.parseInt(years[1]) % 100;
 
-          // Calculate the difference between opening and closing seasons
           int yearDifference = nextYear - startYear;
 
-          // Check if the difference is exactly one year
           if (yearDifference != 1) {
               editTextDate.setError("The latter half of the season should begin precisely one year after the commencement of the opening half (2023/24, 2023/2024 or 23/24)");
               return;
           }
 
-          // Save format to YYYY/YY
           season = standardizeSeasonFormat(season);
 
           // Check if the season already exists in the database
@@ -138,15 +136,16 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
             }
         });
     }
+
+    // Standardize the season format to YYYY/YY
     private String standardizeSeasonFormat(String season) {
-        // Split season once to get start and next years
         String[] years = season.split("/");
         int startYear = Integer.parseInt(years[0]);
         int nextYear = Integer.parseInt(years[1]);
 
         // Convert start year and next year to 4-digit format if necessary
         if (startYear < 100) {
-            startYear += 2000; // Convert to 4-digit format
+            startYear += 2000;
         }
         if (nextYear < 100) {
             nextYear += 2000;
@@ -154,16 +153,8 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
 
         return startYear + "/" + nextYear % 100;
     }
-    public void trophyCabinet(View view){
-        Intent i = new Intent(this, TrophyCabinetActivity.class);
-        String name = ((EditText)findViewById(R.id.teamName)).getText().toString();
-        i.putExtra("NAME", name);
 
-        String abbrev = ((EditText)findViewById(R.id.teamAbbriv)).getText().toString();
-        i.putExtra("ABBREV", abbrev);
-
-        startActivity(i);
-    }
+    //Navigate back to myseasons activty
 
     public void mySeasons(View v){
         Intent i = new Intent(this, MySeasonsActivity.class);
@@ -181,6 +172,7 @@ public class NewSeasonActivity extends AppCompatActivity  implements AdapterView
 
     }
 
+    //Navigate back to main Activity
     public void goHome(View view) {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

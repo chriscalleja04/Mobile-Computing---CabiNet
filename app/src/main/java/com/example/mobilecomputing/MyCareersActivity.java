@@ -37,6 +37,8 @@ public class MyCareersActivity extends AppCompatActivity implements RecyclerView
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Handle back button click to navigate back to MainActivity
+
                 OnBackPressedCallback callback = new OnBackPressedCallback(true) {
                     @Override
                     public void handleOnBackPressed() {

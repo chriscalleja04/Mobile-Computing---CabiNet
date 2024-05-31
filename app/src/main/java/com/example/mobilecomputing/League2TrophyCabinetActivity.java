@@ -30,13 +30,15 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_league2_trophy_cabinet);
+
+        // Initialising top app bar and setting click listener for back button
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
-
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+                OnBackPressedCallback callback = new OnBackPressedCallback(true ) {
+                    // Handle back button click to navigate back to MySeasonsActivity
                     @Override
                     public void handleOnBackPressed() {
                         Intent i = new Intent(League2TrophyCabinetActivity.this, MySeasonsActivity.class);
@@ -56,8 +58,10 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
             return insets;
         });
 
+        // Initialize database helper
         dbHelper = new MyDatabaseHelper(this);
 
+        // Retrieve season ID from the intent
         Intent intent = getIntent();
         String seasonIdString = intent.getStringExtra("ID");
         seasonId = Long.parseLong(seasonIdString);
@@ -67,7 +71,7 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
         boolean isFaVisible = dbHelper.isFaTrophyVisible(seasonId);
         boolean isLeagueVisible = dbHelper.isLeagueTrophyVisible(seasonId);
 
-
+        // Initialize views
         playoffImage = findViewById(R.id.league2_image);
         faImage = findViewById(R.id.fa_Image);
         leagueImage = findViewById(R.id.league_Image);
@@ -81,7 +85,6 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
 
 
         // Set checkbox states
-
         playoff_check.setChecked(isPlayoffVisible);
         fa_check.setChecked(isFaVisible);
         league_check.setChecked(isLeagueVisible);
@@ -96,7 +99,6 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
         playoff_check.setOnCheckedChangeListener((compoundButton, b) -> {
             dbHelper.updatePlayoffTrophyVisibility(seasonId, b ? 1 : 0);
             playoffImage.setVisibility(b ? View.VISIBLE : View.GONE);
-            // If Playoff checkbox is checked, uncheck Championship checkbox
 
         });
 
@@ -112,7 +114,7 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
 
         });
 
-
+        // Set team abbreviation, season, and league text views
         String abbrev = intent.getStringExtra("ABBR");
         ((TextView) findViewById(R.id.abbr)).setText("(" + abbrev + ")");
 
@@ -126,7 +128,7 @@ public class League2TrophyCabinetActivity extends AppCompatActivity {
 
     }
 
-
+    // Navigate back to the main activity when home button is clicked
     public void goHome(View v){
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
